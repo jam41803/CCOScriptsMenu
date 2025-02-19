@@ -443,7 +443,7 @@ const restsetup = async (autoopendiv) => {
 };
 
 //upgrade function
-const upgrade = async (userskin, requestedskin) => {
+const upgrade = async (userskin, requestedskin, requestTokens) => {
   //post request to the api with both skins
   const res = await fetch(`/api/casino/upgrade`, {
     method: "POST",
@@ -530,7 +530,7 @@ const doUpgrade = async () => {
         await getInventorytoUpgrade(inventorytoupgrade[i]._id, inventorytoupgrade[i].price).then((inventory2) => {
           let skin = inventory2[0];
           if (skin != null) {
-            upgrade(inventorytoupgrade[i], skin);
+            upgrade(inventorytoupgrade[i], skin, tokenupgrader);
           }
         }, (err) => {
             console.log(err);
