@@ -1672,7 +1672,7 @@ const doAutoOpen = async (caseName, category) => {
         if (bjactivate) {
           setTimeout(async function () {
             if (!document.getElementById("autobjbutton")) {
-              let lastContainers = document.getElementsByClassName("m_96bdd299");
+              let lastContainers = document.getElementsByClassName("m_7485cace");
               let lastContainer = lastContainers[lastContainers.length - 1];
               let autobjbutton = document.createElement("button");
               autobjbutton.innerHTML = "Auto BJ: OFF";
