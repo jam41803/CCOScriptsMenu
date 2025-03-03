@@ -1,9 +1,11 @@
 // ==UserScript==
 // @name         ScriptsMenu
 // @namespace    miguel19877
+// @updateURL    https://raw.githubusercontent.com/jam41803/CCOScriptsMenu/refs/heads/main/ScriptMenu.js
+// @downloadURL  https://raw.githubusercontent.com/jam41803/CCOScriptsMenu/refs/heads/main/ScriptMenu.js
 // @version      1.3.1
 // @description  Menu that presents in a useful way, a collection of scripts
-// @author       Miguel19877
+// @author       Miguel19877, jam41803
 // @match        https://case-clicker.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @run-at       document-start
@@ -54,16 +56,18 @@ let autoclick = false;
 let coinflipactive = false;
 let coinflipbet = 1;
 let dicebet = 500;
+let bjbet = 500;
 let autoclearcoinflip = false;
 
 let upgraderactive = false;
 let limitupgrader = 2;
 let upgraderXvalue = 2;
-let tokenupgrader = 0;
 let upgraderlabel = document.createElement("label");
 
 let diceactive = false;
 let buttondiceActive = false;
+
+let bjactivate = false;
 
 let temptimes = 0;
 let tempwins = 0;
@@ -132,12 +136,13 @@ const sellSkins = async () => {
     coinflipactive = await GM_getValue("sellscript19877coinflipactive", coinflipactive);
     coinflipbet = await GM_getValue("sellscript19877coinflipbet", coinflipbet);
     dicebet = await GM_getValue("sellscript19877dicebet", dicebet);
+    bjbet = await GM_getValue("sellscript19877bjbet", bjbet);
     upgraderactive = await GM_getValue("sellscript19877upgraderactive", upgraderactive);
     limitupgrader = await GM_getValue("sellscript19877limitupgrader", limitupgrader);
-    tokenupgrader = await GM_getValue("sellscript19877tokenupgrader", tokenupgrader);
     upgraderXvalue = await GM_getValue("sellscript19877upgraderXvalue", upgraderXvalue);
     autoclearcoinflip = await GM_getValue("sellscript19877autoclearcoinflip", autoclearcoinflip);
     diceactive = await GM_getValue("sellscript19877diceactive", diceactive);
+    bjactivate = await GM_getValue("sellscript19877bjactive", bjactivate);
     appearence["home"] = await GM_getValue("sellscript19877home", appearence["home"]);
     appearence["rewards"] = await GM_getValue("sellscript19877rewards", appearence["rewards"]);
     appearence["cases"] = await GM_getValue("sellscript19877cases", appearence["cases"]);
@@ -443,11 +448,11 @@ const restsetup = async (autoopendiv) => {
 };
 
 //upgrade function
-const upgrade = async (userskin, requestedskin, requestTokens) => {
+const upgrade = async (userskin, requestedskin) => {
   //post request to the api with both skins
   const res = await fetch(`/api/casino/upgrade`, {
     method: "POST",
-    body: JSON.stringify({ userSkinReq: userskin, upgradeSkinReq: requestedskin, userTokensReq: requestTokens }),
+    body: JSON.stringify({ userSkinReq: userskin, upgradeSkinReq: requestedskin }),
     headers: { "Content-Type": "application/json" },
   }, (err) => {
       console.log(err);
@@ -530,7 +535,7 @@ const doUpgrade = async () => {
         await getInventorytoUpgrade(inventorytoupgrade[i]._id, inventorytoupgrade[i].price).then((inventory2) => {
           let skin = inventory2[0];
           if (skin != null) {
-            upgrade(inventorytoupgrade[i], skin, tokenupgrader);
+            upgrade(inventorytoupgrade[i], skin);
           }
         }, (err) => {
             console.log(err);
@@ -1270,6 +1275,41 @@ const doAutoOpen = async (caseName, category) => {
       }
       casinodiv.appendChild(dicetext);
 
+      casinodiv.appendChild(document.createElement("br"));
+
+      let blackjackbutton = document.createElement("button");
+      blackjackbutton.innerHTML = "BJ: OFF";
+      blackjackbutton.style = "width: 100px; height: 30px; font-size: 12px; margin-top:10px;margin-left: 10px; margin-right: 10px; background-color: #da1b0f; border: none; border-radius: 5px; color: white;";
+      if (bjactivate){
+        blackjackbutton.innerHTML = "BJ: ON";
+        blackjackbutton.style.backgroundColor = "#46da0f";
+      }
+      blackjackbutton.onclick = function(){
+        bjactivate = !bjactivate;
+        GM_setValue("sellscript19877bjactive", bjactivate);
+        if (bjactivate){
+          blackjackbutton.innerHTML = "BJ: ON";
+          blackjackbutton.style.backgroundColor = "#46da0f";
+        } else {
+          blackjackbutton.innerHTML = "BJ: OFF";
+          blackjackbutton.style.backgroundColor = "#da1b0f";
+        }
+      }
+      casinodiv.appendChild(blackjackbutton);
+
+      let blackjacklabel = document.createElement("label");
+      blackjacklabel.innerHTML = "Bet: ";
+      blackjacklabel.style = "font-size: 16px; margin-left: 10px; margin-left: 10px;";
+      casinodiv.appendChild(blackjacklabel);
+      let blackjacktext = document.createElement("input");
+      blackjacktext.type = "number";
+      blackjacktext.value = bjbet;
+      blackjacktext.style = "width: 100px; height: 30px; font-size: 16px; margin-left: 10px; margin-right: 10px;";
+      blackjacktext.onchange = function(){
+        bjbet = blackjacktext.value;
+        GM_setValue("sellscript19877bjbet", bjbet);
+      }
+      casinodiv.appendChild(blackjacktext);
 
 
       casinodiv.appendChild(document.createElement("br"));
@@ -1324,19 +1364,6 @@ const doAutoOpen = async (caseName, category) => {
         GM_setValue("sellscript19877limitupgrader", limitupgrader);
       }
       casinodiv.appendChild(limittext);
-      let tokenlabel = document.createElement("label");
-      tokenlabel.innerHTML = "Tokens: ";
-      tokenlabel.style = "font-size: 16px; margin-left: 10px; margin-left: 5px;";
-      casinodiv.appendChild(tokenlabel);
-      let tokentext = document.createElement("input");
-      tokentext.type = "number";
-      tokentext.value = tokenupgrader;
-      tokentext.style = "width: 100px; height: 30px; font-size: 16px; margin-left: 5px; margin-right: 5px;";
-      tokentext.onchange = function(){
-        tokenupgrader = tokentext.value;
-        GM_setValue("sellscript19877tokenupgrader", tokenupgrader);
-      }
-      casinodiv.appendChild(tokentext);
 
       let appearancebutton = document.createElement("button");
       appearancebutton.innerHTML = "Appearance";
@@ -1658,7 +1685,7 @@ const doAutoOpen = async (caseName, category) => {
     setTimeout(async function(){
       while(true) {
         if (buttondiceActive) {
-          let diceButton = document.getElementsByClassName("m_80f1301b")[2];
+          let diceButton = document.getElementsByClassName("m_80f1301b")[3];
           if (!diceButton.disabled){
             let result = document.getElementsByClassName("m_b6d8b162")[11];
             if (result) {
