@@ -65,7 +65,7 @@ let upgraderXvalue = 2;
 let upgraderlabel = document.createElement("label");
 
 let diceactive = false;
-let buttondiceActive = false;
+let buttonbjActive = false;
 
 let bjactivate = false;
 
@@ -1823,19 +1823,15 @@ const doAutoOpen = async (caseName, category) => {
     while (true) {
       if (buttonbjActive) {
         let bjbutton = document.getElementsByClassName('m_77c9d27d')[1];
-        if (!bjbutton.disabled) {
-          let result = document.getElementsByClassName('m_b6d8b162')[15];
-          if (result) {
-            bjbutton.click();
-          }
+        if (bjbutton.disabled) {
           let dealerHand = document.getElementsByClassName('m_9e117634')[2].alt.substring(0, document.getElementsByClassName('m_9e117634')[2].alt.length - 1) // Remove suit
           let playerHand = [];
           for (var i = 4; i < document.getElementsByClassName('m_9e117634').length; i++) {
             playerHand.push(document.getElementsByClassName('m_9e117634')[i].alt.substring(0, document.getElementsByClassName('m_9e117634')[i].alt.length - 1));
           }
-          let hit = document.getElementsByClassName('m_87cf2631')[21]
-          let stand = document.getElementsByClassName('m_87cf2631')[22]
-          let double = document.getElementsByClassName('m_87cf2631')[23]
+          let hit = document.getElementsByClassName('m_77c9d27d')[2]
+          let stand = document.getElementsByClassName('m_77c9d27d')[3]
+          let double = document.getElementsByClassName('m_77c9d27d')[4]
           let dealerValue = cards.get(dealerHand);
           let playerValue = totalHand(playerHand);
 
@@ -1849,8 +1845,12 @@ const doAutoOpen = async (caseName, category) => {
             hit.click();
           }
         }
+        let result = document.getElementsByClassName('m_b6d8b162')[15];
+          if (result) {
+            bjbutton.click();
+          }
       }
-      await new Promise(r => setTimeout(r, 200))
+      await new Promise(r => setTimeout(r, 500))
     }
   }, 1000)
   setTimeout(async function () {
