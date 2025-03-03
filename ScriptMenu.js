@@ -62,6 +62,7 @@ let autoclearcoinflip = false;
 let upgraderactive = false;
 let limitupgrader = 2;
 let upgraderXvalue = 2;
+let tokenupgrader = 0;
 let upgraderlabel = document.createElement("label");
 
 let diceactive = false;
@@ -139,6 +140,7 @@ const loadAllConfigs = async () => {
   bjbet = await GM_getValue("sellscript19877bjbet", bjbet);
   upgraderactive = await GM_getValue("sellscript19877upgraderactive", upgraderactive);
   limitupgrader = await GM_getValue("sellscript19877limitupgrader", limitupgrader);
+  tokenupgrader = await GM_getValue("sellscript19877tokenupgrader", tokenupgrader);
   upgraderXvalue = await GM_getValue("sellscript19877upgraderXvalue", upgraderXvalue);
   autoclearcoinflip = await GM_getValue("sellscript19877autoclearcoinflip", autoclearcoinflip);
   diceactive = await GM_getValue("sellscript19877diceactive", diceactive);
@@ -448,20 +450,20 @@ const restsetup = async (autoopendiv) => {
 };
 
 //upgrade function
-const upgrade = async (userskin, requestedskin) => {
+const upgrade = async (userskin, requestedskin, requestTokens) => {
   //post request to the api with both skins
   const res = await fetch(`/api/casino/upgrade`, {
     method: "POST",
-    body: JSON.stringify({ userSkinReq: userskin, upgradeSkinReq: requestedskin }),
+    body: JSON.stringify({ userSkinReq: userskin, upgradeSkinReq: requestedskin, userTokensReq: requestTokens }),
     headers: { "Content-Type": "application/json" },
   }, (err) => {
-    console.log(err);
+      console.log(err);
   });
   const json = await res.json();
   if (json.result == true) {
-    tempwins += 1;
-  } else {
-    temploses += 1;
+      tempwins += 1;
+  }else {
+      temploses += 1;
   }
   temptimes += 1;
   upgraderlabel.innerHTML = "Upgraded " + temptimes + " times \n" + "Wins: " + tempwins + " Loses: " + temploses;
@@ -499,15 +501,15 @@ const getInventory = async (page) => {
 const doUpgrade = async () => {
   await getInventory(1).then(async (inventory) => {
     if (inventory.pages > 1) {
-      for (let i = 2; i <= inventory.pages; i++) {
-        if (tempactive) {
-          await getInventory(i).then((inventory2) => {
-            inventory.skins = inventory.skins.concat(inventory2.skins);
-          });
-        } else {
-          break;
+        for (let i = 2; i <= inventory.pages; i++) {
+            if (tempactive) {
+              await getInventory(i).then((inventory2) => {
+                inventory.skins = inventory.skins.concat(inventory2.skins);
+              });
+            }else {
+              break;
+            }
         }
-      }
     }
     for (let i = 0; i < inventory.skins.length; i++) {
       if (inventory.skins[i].weaponprice == null) {
@@ -515,7 +517,7 @@ const doUpgrade = async () => {
           await inventory.skins.splice(i, 1);
           i = i - 1;
         }
-      } else {
+      }else {
         if (inventory.skins[i].weaponprice > limitupgrader) {
           await inventory.skins.splice(i, 1);
           i = i - 1;
@@ -527,7 +529,7 @@ const doUpgrade = async () => {
     console.log(inventorytoupgrade);
     upgraderlabel.innerHTML = "Inventory loaded. Checking items and preparing for autoupgrade..."
   }, (err) => {
-    console.log(err);
+      console.log(err);
   });
   await sleep(500);
   for (let i = 0; i < inventorytoupgrade.length; i++) {
@@ -535,12 +537,12 @@ const doUpgrade = async () => {
       await getInventorytoUpgrade(inventorytoupgrade[i]._id, inventorytoupgrade[i].price).then((inventory2) => {
         let skin = inventory2[0];
         if (skin != null) {
-          upgrade(inventorytoupgrade[i], skin);
+          upgrade(inventorytoupgrade[i], skin, tokenupgrader);
         }
       }, (err) => {
-        console.log(err);
+          console.log(err);
       });
-    } else {
+    }else {
       break;
     }
     await sleep(150);
@@ -1364,6 +1366,19 @@ const doAutoOpen = async (caseName, category) => {
         GM_setValue("sellscript19877limitupgrader", limitupgrader);
       }
       casinodiv.appendChild(limittext);
+      let tokenlabel = document.createElement("label");
+      tokenlabel.innerHTML = "Tokens: ";
+      tokenlabel.style = "font-size: 16px; margin-left: 10px; margin-left: 5px;";
+      casinodiv.appendChild(tokenlabel);
+      let tokentext = document.createElement("input");
+      tokentext.type = "number";
+      tokentext.value = tokenupgrader;
+      tokentext.style = "width: 100px; height: 30px; font-size: 16px; margin-left: 5px; margin-right: 5px;";
+      tokentext.onchange = function(){
+        tokenupgrader = tokentext.value;
+        GM_setValue("sellscript19877tokenupgrader", tokenupgrader);
+      }
+      casinodiv.appendChild(tokentext);
 
       let appearancebutton = document.createElement("button");
       appearancebutton.innerHTML = "Appearance";
@@ -1747,7 +1762,7 @@ const doAutoOpen = async (caseName, category) => {
                     inputElement.dispatchEvent(new Event('change', { bubbles: true }));
                     inputElement.dispatchEvent(new Event('blur', { bubbles: true }));
 
-                    console.log(inputElement.value);
+                    // console.log(inputElement.value);
                   };
 
                   setInputValue();
