@@ -1660,9 +1660,9 @@ const doAutoOpen = async (caseName, category) => {
               autodicebutton.id = "autodicebutton";
               autodicebutton.style = "width: 100px; height: 30px; font-size: 12px; margin-left: 10px; margin-right: 10px; background-color: #da1b0f; border: none; border-radius: 5px; color: white;";
               autodicebutton.onclick = async function () {
-                buttondiceActive = !buttondiceActive;
-                autodicebutton.innerHTML = "Auto Dice: " + (buttondiceActive ? "ON" : "OFF");
-                autodicebutton.style.backgroundColor = (buttondiceActive ? "#46da0f" : "#da1b0f");
+                diceactive = !diceactive;
+                autodicebutton.innerHTML = "Auto Dice: " + (diceactive ? "ON" : "OFF");
+                autodicebutton.style.backgroundColor = (diceactive ? "#46da0f" : "#da1b0f");
               }
               lastContainer.appendChild(autodicebutton);
             }
@@ -1703,7 +1703,7 @@ const doAutoOpen = async (caseName, category) => {
   }, 1000);
   setTimeout(async function () {
     while (true) {
-      if (buttondiceActive) {
+      if (diceactive) {
         let diceButton = document.getElementsByClassName("m_80f1301b")[3];
         if (!diceButton.disabled) {
           let result = document.getElementsByClassName("m_b6d8b162")[11];
