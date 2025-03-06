@@ -1863,7 +1863,6 @@ const doAutoOpen = async (caseName, category) => {
         let result = document.getElementsByClassName('m_b6d8b162')[15];
         if (result) {
           let textContent = result.textContent || result.innerText;
-
           if (textContent.includes("lost") || textContent.includes("loss") || textContent.includes("lose")) {
             let inputElements = document.getElementsByClassName("m_8fb7ebe7");
             if (inputElements.length > 0) {
@@ -1962,6 +1961,48 @@ const doAutoOpen = async (caseName, category) => {
               console.log('Input element not found.');
             }
           }
+        }
+        let inputElements = document.getElementsByClassName("m_8fb7ebe7");
+        if (inputElements[0].value < bjbet.toString()){
+            if (inputElements.length > 0) {
+              // Temporarily disable MutationObservers
+              let observers = [];
+              const disableObservers = () => {
+                observers = Array.from(inputElement.closest('*').querySelectorAll('*'))
+                  .filter(el => el.__zone_symbol__MutationObserver);
+                observers.forEach(observer => observer.disconnect());
+              };
+              const enableObservers = () => {
+                observers.forEach(observer => observer.observe());
+              };
+
+              disableObservers();
+
+              // Function to set the input value and trigger necessary events
+              const setInputValue = () => {
+                // Using Object.defineProperty to set the value
+                Object.defineProperty(inputElement, 'value', {
+                  value: bjbet.toString(),
+                  writable: true
+                });
+                inputElement.setAttribute('value', bjbet.toString());
+
+                inputElement.dispatchEvent(new Event('input', { bubbles: true }));
+                inputElement.dispatchEvent(new Event('change', { bubbles: true }));
+                inputElement.dispatchEvent(new Event('blur', { bubbles: true }));
+
+                console.log(inputElement.value);
+              };
+
+              setInputValue();
+              enableObservers();
+
+              if (inputElement.value !== bjbet.toString()) {
+                console.log('Failed to set the input value after retries.');
+              }
+            } else {
+              console.log('Input element not found.');
+            }
         }
         bjbutton.click()
       }
