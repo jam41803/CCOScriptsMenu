@@ -3,7 +3,7 @@
 // @namespace    miguel19877
 // @updateURL    https://raw.githubusercontent.com/jam41803/CCOScriptsMenu/refs/heads/main/ScriptMenu.js
 // @downloadURL  https://raw.githubusercontent.com/jam41803/CCOScriptsMenu/refs/heads/main/ScriptMenu.js
-// @version      1.3.1
+// @version      1.3.2
 // @description  Menu that presents in a useful way, a collection of scripts
 // @author       Miguel19877, jam41803
 // @match        https://case-clicker.com/*
@@ -1861,9 +1861,107 @@ const doAutoOpen = async (caseName, category) => {
           }
         }
         let result = document.getElementsByClassName('m_b6d8b162')[15];
-          if (result) {
-            bjbutton.click();
+        if (result) {
+          let textContent = result.textContent || result.innerText;
+
+          if (textContent.includes("Lost")) {
+            let inputElements = document.getElementsByClassName("m_8fb7ebe7");
+            if (inputElements.length > 0) {
+              let inputElement = inputElements[0];
+              let inputValue = inputElement.value;
+              let numericValue = parseFloat(inputValue);
+
+              if (!isNaN(numericValue)) {
+                let doubledValue = numericValue * 2;
+                let newBet = doubledValue.toString();
+
+                // Temporarily disable MutationObservers
+                let observers = [];
+                const disableObservers = () => {
+                  observers = Array.from(inputElement.closest('*').querySelectorAll('*'))
+                    .filter(el => el.__zone_symbol__MutationObserver);
+                  observers.forEach(observer => observer.disconnect());
+                };
+                const enableObservers = () => {
+                  observers.forEach(observer => observer.observe());
+                };
+
+                disableObservers();
+
+                // Function to set the input value and trigger necessary events
+                const setInputValue = () => {
+                  // Using Object.defineProperty to set the value
+                  Object.defineProperty(inputElement, 'value', {
+                    value: newBet,
+                    writable: true
+                  });
+                  inputElement.setAttribute('value', newBet);
+
+                  inputElement.dispatchEvent(new Event('input', { bubbles: true }));
+                  inputElement.dispatchEvent(new Event('change', { bubbles: true }));
+                  inputElement.dispatchEvent(new Event('blur', { bubbles: true }));
+
+                  // console.log(inputElement.value);
+                };
+
+                setInputValue();
+                enableObservers();
+
+                if (inputElement.value !== newBet) {
+                  console.log('Failed to set the input value after retries.');
+                }
+              } else {
+                console.log('The input value is not a number.');
+              }
+            } else {
+              console.log('Input element not found.');
+            }
+          } else {
+            let inputElements = document.getElementsByClassName("m_8fb7ebe7");
+            if (inputElements.length > 0) {
+              let inputElement = inputElements[0];
+
+              // Temporarily disable MutationObservers
+              let observers = [];
+              const disableObservers = () => {
+                observers = Array.from(inputElement.closest('*').querySelectorAll('*'))
+                  .filter(el => el.__zone_symbol__MutationObserver);
+                observers.forEach(observer => observer.disconnect());
+              };
+              const enableObservers = () => {
+                observers.forEach(observer => observer.observe());
+              };
+
+              disableObservers();
+
+              // Function to set the input value and trigger necessary events
+              const setInputValue = () => {
+                // Using Object.defineProperty to set the value
+                Object.defineProperty(inputElement, 'value', {
+                  value: bjbet.toString(),
+                  writable: true
+                });
+                inputElement.setAttribute('value', bjbet.toString());
+
+                inputElement.dispatchEvent(new Event('input', { bubbles: true }));
+                inputElement.dispatchEvent(new Event('change', { bubbles: true }));
+                inputElement.dispatchEvent(new Event('blur', { bubbles: true }));
+
+                console.log(inputElement.value);
+              };
+
+              setInputValue();
+              enableObservers();
+
+              if (inputElement.value !== bjbet.toString()) {
+                console.log('Failed to set the input value after retries.');
+              }
+            } else {
+              console.log('Input element not found.');
+            }
           }
+        }
+        bjbutton.click()
       }
       await new Promise(r => setTimeout(r, 500))
     }
