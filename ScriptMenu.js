@@ -3,7 +3,7 @@
 // @namespace    miguel19877
 // @updateURL    https://raw.githubusercontent.com/jam41803/CCOScriptsMenu/refs/heads/main/ScriptMenu.js
 // @downloadURL  https://raw.githubusercontent.com/jam41803/CCOScriptsMenu/refs/heads/main/ScriptMenu.js
-// @version      1.3.3
+// @version      1.3.31
 // @description  Menu that presents in a useful way, a collection of scripts
 // @author       Miguel19877, jam41803
 // @match        https://case-clicker.com/*
@@ -1719,7 +1719,7 @@ const doAutoOpen = async (caseName, category) => {
   setTimeout(async function () {
     while (true) {
       if (diceactive) {
-        let diceButton = document.getElementsByClassName("m_80f1301b")[3];
+        let diceButton = document.getElementsByClassName("m_87cf2631")[21];
         if (!diceButton.disabled) {
           let result = document.getElementsByClassName("m_b6d8b162")[11];
           if (result) {
