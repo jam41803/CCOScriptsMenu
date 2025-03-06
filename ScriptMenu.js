@@ -1729,7 +1729,7 @@ const doAutoOpen = async (caseName, category) => {
               let inputElements = document.getElementsByClassName("m_8fb7ebe7");
               if (inputElements.length > 0) {
                 let inputElement = inputElements[0];
-                let inputValue = inputElement.value;
+                let inputValue = inputElement.value.replace(',','')
                 let numericValue = parseFloat(inputValue);
 
                 if (!isNaN(numericValue)) {
@@ -1864,17 +1864,17 @@ const doAutoOpen = async (caseName, category) => {
         if (result) {
           let textContent = result.textContent || result.innerText;
 
-          if (textContent.includes("Lost")) {
+          if (textContent.includes("lost") || textContent.includes("loss") || textContent.includes("lose")) {
             let inputElements = document.getElementsByClassName("m_8fb7ebe7");
             if (inputElements.length > 0) {
               let inputElement = inputElements[0];
-              let inputValue = inputElement.value;
+              let inputValue = inputElement.value.replace(',','');
               let numericValue = parseFloat(inputValue);
 
               if (!isNaN(numericValue)) {
                 let doubledValue = numericValue * 2;
                 let newBet = doubledValue.toString();
-
+                console.log(`betting ${newBet}`)
                 // Temporarily disable MutationObservers
                 let observers = [];
                 const disableObservers = () => {
@@ -1901,13 +1901,13 @@ const doAutoOpen = async (caseName, category) => {
                   inputElement.dispatchEvent(new Event('change', { bubbles: true }));
                   inputElement.dispatchEvent(new Event('blur', { bubbles: true }));
 
-                  // console.log(inputElement.value);
+                  console.log(inputElement.value);
                 };
 
                 setInputValue();
                 enableObservers();
 
-                if (inputElement.value !== newBet) {
+                if (inputElement.value.replace(',','') !== newBet) {
                   console.log('Failed to set the input value after retries.');
                 }
               } else {
@@ -1916,6 +1916,8 @@ const doAutoOpen = async (caseName, category) => {
             } else {
               console.log('Input element not found.');
             }
+          } else if (textContent.includes("draw") || textContent.includes("drew") || textContent.includes("drawn")){
+
           } else {
             let inputElements = document.getElementsByClassName("m_8fb7ebe7");
             if (inputElements.length > 0) {
