@@ -45,10 +45,11 @@
         left: "50px",
         fontFamily: "Arial, sans-serif",
         zIndex: 9999,
-        display: "none", // Initially hidden
         overflow: "auto",  // Allow scrolling if content overflows
         height: "50%",
-        width: "30%"
+        width: "30%",
+        maxHeight: "80vh",
+        overflowY: "auto"
     });
 
     // Style for tabs (pill style)
@@ -60,6 +61,8 @@
         backgroundColor: "#34495e",  // Inactive tab background color
         borderRadius: "5px",  // Rounded corners for the tab holder
         padding: "5px",  // Padding to give some space between tabs
+        zIndex: "1000"
+
     });
 
     // Style for tab button (pill-like appearance)
@@ -139,6 +142,23 @@
 
     // Make the menu draggable by the tabs section
     makeDraggable(menu);
+    makeDraggable(tabs)
+
+    function saveMenuPosition() {
+    GM_setValue("menuLeft", menu.style.left);
+    GM_setValue("menuTop", menu.style.top);
+    }
+
+    function restoreMenuPosition() {
+        const left = GM_getValue("menuLeft", "50px");
+        const top = GM_getValue("menuTop", "50px");
+        menu.style.left = left;
+        menu.style.top = top;
+    }
+
+restoreMenuPosition(); // Call this at the start
+
+document.addEventListener('mouseup', saveMenuPosition);
 
     // Append the menu to the body
     document.body.appendChild(menu);
