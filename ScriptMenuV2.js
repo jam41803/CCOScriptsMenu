@@ -15,7 +15,7 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-(function() {
+(function () {
     'use strict';
 
     // Create the settings menu container
@@ -23,7 +23,7 @@
     menu.innerHTML = `
         <div id="settings-menu" class="settings-menu">
             <div id="tabs" class="tabs">
-                <!-- Tabs will be dynamically added here -->
+                <div id="glider" class="glider"></div>
             </div>
             <div id="settings-content">
                 <!-- Tab content will be dynamically added here -->
@@ -52,6 +52,17 @@
         overflowY: "auto"
     });
 
+    const glider = menu.querySelector("#glider");
+    Object.assign(glider.style, {
+        position: "absolute",
+        bottom: "0",
+        height: "4px",
+        backgroundColor: "#1abc9c",
+        transition: "all 0.3s ease",
+        borderRadius: "2px"
+    });
+
+
     // Style for tabs (pill style)
     const tabs = menu.querySelector("#tabs");
     Object.assign(tabs.style, {
@@ -61,8 +72,6 @@
         backgroundColor: "#34495e",  // Inactive tab background color
         borderRadius: "5px",  // Rounded corners for the tab holder
         padding: "5px",  // Padding to give some space between tabs
-        zIndex: "1000"
-
     });
 
     // Style for tab button (pill-like appearance)
@@ -145,8 +154,8 @@
     makeDraggable(tabs)
 
     function saveMenuPosition() {
-    GM_setValue("menuLeft", menu.style.left);
-    GM_setValue("menuTop", menu.style.top);
+        GM_setValue("menuLeft", menu.style.left);
+        GM_setValue("menuTop", menu.style.top);
     }
 
     function restoreMenuPosition() {
@@ -156,90 +165,51 @@
         menu.style.top = top;
     }
 
-restoreMenuPosition(); // Call this at the start
+    restoreMenuPosition(); // Call this at the start
 
-document.addEventListener('mouseup', saveMenuPosition);
+    document.addEventListener('mouseup', saveMenuPosition);
 
     // Append the menu to the body
     document.body.appendChild(menu);
 
     // Function to add a new tab dynamically
     function addTab(tabId, tabTitle) {
-        // Create the tab button
         const tabButton = document.createElement("button");
         tabButton.classList.add("tab-button");
         tabButton.setAttribute("data-tab", tabId);
         tabButton.textContent = tabTitle;
+        tabButton.style.padding = "10px 20px";
+        tabButton.style.border = "none";
+        tabButton.style.backgroundColor = "transparent";
+        tabButton.style.color = "white";
+        tabButton.style.cursor = "pointer";
+        tabButton.style.flex = "1";
+        tabButton.style.position = "relative";
+        tabButton.style.fontSize = "14px";
 
-        // Apply pill style to tab
-        Object.assign(tabButton.style, tabStyle);
-
-        // Add hover effect
-        tabButton.addEventListener("mouseover", () => {
-            Object.assign(tabButton.style, tabHoverStyle);
-        });
-
-        tabButton.addEventListener("mouseout", () => {
-            if (!tabButton.classList.contains('active')) {
-                Object.assign(tabButton.style, tabStyle);
-            }
-        });
-
-        // Add tab click listener
         tabButton.addEventListener("click", () => {
-            // Hide all tab content
-            const tabContents = menu.querySelectorAll(".tab-content");
-            tabContents.forEach(content => {
+            document.querySelectorAll(".tab-content").forEach(content => {
                 content.style.display = "none";
-                content.style.opacity = "0"; // Set opacity to 0 for smooth transition
-                content.style.transform = "translateX(-100%)"; // Slide out
             });
-
-            // Show the selected tab content with transition
             const activeTab = menu.querySelector(`#${tabId}`);
             activeTab.style.display = "block";
-            activeTab.style.opacity = "1"; // Set opacity to 1 for visible content
-            activeTab.style.transform = "translateX(0)"; // Slide in
 
-            // Add transition for sliding effect
-            activeTab.style.transition = "transform 0.5s ease, opacity 0.5s ease";
-
-            // Remove the 'active' class from all tabs and add it to the selected one
-            const allTabButtons = tabs.querySelectorAll(".tab-button");
-            allTabButtons.forEach(button => {
-                button.classList.remove("active");
-                // Reset background color for all tabs
-                Object.assign(button.style, tabStyle);
-            });
-            tabButton.classList.add("active");
-            // Apply active tab styles
-            Object.assign(tabButton.style, activeTabStyle);
+            const rect = tabButton.getBoundingClientRect();
+            const parentRect = tabs.getBoundingClientRect();
+            glider.style.width = `${rect.width}px`;
+            glider.style.left = `${rect.left - parentRect.left}px`;
         });
 
-        // Add the tab button to the tabs container
         tabs.appendChild(tabButton);
 
-        // Create the content container for this tab
         const tabContent = document.createElement("div");
         tabContent.id = tabId;
         tabContent.classList.add("tab-content");
-        tabContent.style.display = "none"; // Hide by default
-        tabContent.style.position = "absolute"; // Position the content
-        tabContent.style.top = "0";
-        tabContent.style.left = "0";
-        tabContent.style.width = "100%";
-        tabContent.style.height = "100%";
-
-        // Add the content container to the settings content area
+        tabContent.style.display = "none";
         settingsContent.appendChild(tabContent);
 
-        // Set the first tab as active
-        if (tabs.querySelectorAll(".tab-button").length === 1) {
-            tabButton.classList.add("active");
-            // Apply active tab styles
-            Object.assign(tabButton.style, activeTabStyle);
-            tabContent.style.display = "block"; // Show first tab content
-            tabContent.style.opacity = "1"; // Make first tab content visible
+        if (tabs.children.length === 2) {
+            tabButton.click();
         }
     }
 
@@ -274,7 +244,7 @@ document.addEventListener('mouseup', saveMenuPosition);
             settingInput.checked = GM_getValue(id, false);
             settingInput.style.marginRight = "10px"; // Space between checkbox and label
 
-            settingInput.addEventListener("change", function() {
+            settingInput.addEventListener("change", function () {
                 GM_setValue(id, settingInput.checked); // Save the state of the checkbox
             });
         } else if (type === "text") {
@@ -287,7 +257,7 @@ document.addEventListener('mouseup', saveMenuPosition);
             settingInput.style.marginTop = "5px"; // Space between text input and label
             settingInput.style.marginLeft = "5px"
 
-            settingInput.addEventListener("input", function() {
+            settingInput.addEventListener("input", function () {
                 GM_setValue(id, settingInput.value); // Save the value of the text input
             });
         } else if (type === "switch") {
@@ -321,7 +291,7 @@ document.addEventListener('mouseup', saveMenuPosition);
                 settingInput.style.backgroundColor = "#ccc"; // Gray when unchecked
             }
 
-            settingInput.addEventListener("change", function() {
+            settingInput.addEventListener("change", function () {
                 GM_setValue(id, settingInput.checked); // Save the state of the switch
                 if (settingInput.checked) {
                     settingInput.style.backgroundColor = "#4caf50"; // Green when checked
@@ -380,15 +350,14 @@ document.addEventListener('mouseup', saveMenuPosition);
     }, 3000);
 
     // Keybind for toggling menu visibility (Alt + G)
-    window.addEventListener("keydown", function(e) {
+    window.addEventListener("keydown", function (e) {
         if (e.altKey && e.key === "g") {
             menu.style.display = (menu.style.display === "none") ? "block" : "none";
         }
     });
 
     // Close button functionality
-    closeButton.addEventListener("click", function() {
+    closeButton.addEventListener("click", function () {
         menu.style.display = "none";
     });
 })();
-
