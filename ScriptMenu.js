@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         ScriptsMenu
 // @namespace    miguel19877
-// @updateURL    https://raw.githubusercontent.com/jam41803/CCOScriptsMenu/refs/heads/main/ScriptMenu.js
-// @downloadURL  https://raw.githubusercontent.com/jam41803/CCOScriptsMenu/refs/heads/main/ScriptMenu.js
+// @updateURL    https://raw.githubusercontent.com/jam41803/CCOScriptsMenu/refs/heads/develop/ScriptMenu.js
+// @downloadURL  https://raw.githubusercontent.com/jam41803/CCOScriptsMenu/refs/heads/develop/ScriptMenu.js
 // @version      1.4
 // @description  Menu that presents in a useful way, a collection of scripts
 // @author       Miguel19877, jam41803
