@@ -200,7 +200,47 @@ window.fetch = function (input, init) {
   });
 };
 
+const checkAndDeleteArmory = () => {
+  const xhr = new XMLHttpRequest();
+  xhr.open("GET", "/api/armory", true);
 
+  xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+              const data = JSON.parse(xhr.responseText);
+              const highXpPasses = data.armoryPasses.filter(pass => pass.xp > 4000);
+
+              if (highXpPasses.length > 0) {
+                  console.log(`Deleting armory ${highXpPasses.length} times due to XP exceeding 4000...`);
+                  for (let i = 0; i < highXpPasses.length; i++) {
+                      deleteArmory(i + 1);
+                  }
+              }
+          } else {
+              console.error("Error fetching armory:", xhr.responseText);
+          }
+      }
+  };
+
+  xhr.send();
+};
+
+const deleteArmory = (count) => {
+  const xhr = new XMLHttpRequest();
+  xhr.open("DELETE", "/api/armory", true);
+
+  xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+          if (xhr.status === 200 || xhr.status === 204) {
+              console.log(`Armory deleted successfully (${count})`);
+          } else {
+              console.error("Error deleting armory:", xhr.responseText);
+          }
+      }
+  };
+
+  xhr.send();
+};
 
 const getCasesAmount = async () => {
   const res = await fetch("/api/cases", {
@@ -1834,6 +1874,7 @@ const doAutoOpen = async (caseName, category) => {
     }
 
   }, 1000);
+  setTimeout(checkAndDeleteArmory(), 30000);
   setTimeout(async function () {
     while (true) {
       if (buttonbjActive) {
@@ -2004,6 +2045,7 @@ const doAutoOpen = async (caseName, category) => {
               console.log('Input element not found.');
             }
         }
+        await new Promise(r => setTimeout(r, 500))
         bjbutton.click()
       }
       await new Promise(r => setTimeout(r, 500))
