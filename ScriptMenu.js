@@ -1877,7 +1877,7 @@ const doAutoOpen = async (caseName, category) => {
   setTimeout(checkAndDeleteArmory(), 30000);
   setTimeout(async function () {
     while (true) {
-      if (buttonbjActive) {
+      if (buttonbjActive && window.location.pathname == "/game/blackjack") {
         let bjbutton = document.getElementsByClassName('m_77c9d27d')[1];
         if (bjbutton.disabled) {
           let dealerHand = document.getElementsByClassName('m_9e117634')[2].alt.substring(0, document.getElementsByClassName('m_9e117634')[2].alt.length - 1) // Remove suit
