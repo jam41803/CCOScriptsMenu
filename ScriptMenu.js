@@ -3,7 +3,7 @@
 // @namespace    miguel19877
 // @updateURL    https://raw.githubusercontent.com/jam41803/CCOScriptsMenu/refs/heads/main/ScriptMenu.js
 // @downloadURL  https://raw.githubusercontent.com/jam41803/CCOScriptsMenu/refs/heads/main/ScriptMenu.js
-// @version      1.3.31
+// @version      1.4
 // @description  Menu that presents in a useful way, a collection of scripts
 // @author       Miguel19877, jam41803
 // @match        https://case-clicker.com/*
