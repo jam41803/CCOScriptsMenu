@@ -96,6 +96,7 @@
     // Style for tab content area
     const settingsContent = menu.querySelector("#settings-content");
     settingsContent.style.position = "relative"; // Allow positioning of tab content
+    settingsContent.style.display = "grid";
 
     // Add hover effect for close button
     const closeButton = menu.querySelector("#close-menu");
@@ -196,13 +197,15 @@ document.addEventListener('mouseup', saveMenuPosition);
             });
 
             // Show the selected tab content with transition
-            const activeTab = menu.querySelector(`#${tabId}`);
-            activeTab.style.display = "block";
-            activeTab.style.opacity = "1"; // Set opacity to 1 for visible content
-            activeTab.style.transform = "translateX(0)"; // Slide in
+            const activeTab1 = menu.querySelector(`#${tabId + '1'}`);
+            activeTab1.style.display = "block";
+            activeTab1.style.opacity = "1"; // Set opacity to 1 for visible content
+            activeTab1.style.transform = "translateX(0)"; // Slide in
 
-            // Add transition for sliding effect
-            activeTab.style.transition = "transform 0.5s ease, opacity 0.5s ease";
+            const activeTab2 = menu.querySelector(`#${tabId + '2'}`);
+            activeTab2.style.display = "block";
+            activeTab2.style.opacity = "1"; // Set opacity to 1 for visible content
+            activeTab2.style.transform = "translateX(0)"; // Slide in
 
             // Remove the 'active' class from all tabs and add it to the selected one
             const allTabButtons = tabs.querySelectorAll(".tab-button");
@@ -221,17 +224,28 @@ document.addEventListener('mouseup', saveMenuPosition);
 
         // Create the content container for this tab
         const tabContent = document.createElement("div");
-        tabContent.id = tabId;
+        tabContent.id = tabId + '1';
         tabContent.classList.add("tab-content");
         tabContent.style.display = "none"; // Hide by default
         tabContent.style.position = "absolute"; // Position the content
         tabContent.style.top = "0";
         tabContent.style.left = "0";
-        tabContent.style.width = "100%";
+        tabContent.style.width = "50%";
         tabContent.style.height = "100%";
+
+        const tabContent2 = document.createElement("div");
+        tabContent2.id = tabId + '2';
+        tabContent2.classList.add("tab-content");
+        tabContent2.style.display = "none"; // Hide by default
+        tabContent2.style.position = "absolute"; // Position the content
+        tabContent2.style.top = "0";
+        tabContent2.style.right = "0";
+        tabContent2.style.width = "50%";
+        tabContent2.style.height = "100%";
 
         // Add the content container to the settings content area
         settingsContent.appendChild(tabContent);
+        settingsContent.appendChild(tabContent2);
 
         // Set the first tab as active
         if (tabs.querySelectorAll(".tab-button").length === 1) {
@@ -240,32 +254,35 @@ document.addEventListener('mouseup', saveMenuPosition);
             Object.assign(tabButton.style, activeTabStyle);
             tabContent.style.display = "block"; // Show first tab content
             tabContent.style.opacity = "1"; // Make first tab content visible
+            tabContent2.style.display = "block"; // Show first tab content
+            tabContent2.style.opacity = "1"; // Make first tab content visible
         }
     }
 
     // Add the first tab and content as an example
     addTab("general", "General");
-    addTab("advanced", "Advanced");
+    addTab("autoSell", "Auto Sell");
 
     // Function to add a setting (with save functionality)
-    function addSetting(type, label, id, placeholder = "", tab = "general") {
+    function addSetting(type, label, id, placeholder = "", tab = "general", contentSide = '1') {
         // Ensure the tab content exists
-        const tabContent = menu.querySelector(`#${tab}`);
+        const tabContent = menu.querySelector(`#${tab + contentSide}`);
         if (!tabContent) {
             console.error(`Tab content for "${tab}" not found.`);
             return;
         }
-
+    
         const settingItem = document.createElement("div");
         settingItem.classList.add("setting-item");
-
+    
         // Create label
         const settingLabel = document.createElement("label");
         settingLabel.setAttribute("for", id);
         settingLabel.textContent = label;
-
-        // Create the setting input based on the type
+    
         let settingInput;
+    
+        // Create the setting input based on the type
         if (type === "checkbox") {
             settingInput = document.createElement("input");
             settingInput.type = "checkbox";
@@ -273,7 +290,7 @@ document.addEventListener('mouseup', saveMenuPosition);
             // Load the saved state of the checkbox
             settingInput.checked = GM_getValue(id, false);
             settingInput.style.marginRight = "10px"; // Space between checkbox and label
-
+    
             settingInput.addEventListener("change", function() {
                 GM_setValue(id, settingInput.checked); // Save the state of the checkbox
             });
@@ -284,9 +301,8 @@ document.addEventListener('mouseup', saveMenuPosition);
             settingInput.id = id;
             // Load the saved value for the text input
             settingInput.value = GM_getValue(id, "");
-            settingInput.style.marginTop = "5px"; // Space between text input and label
-            settingInput.style.marginLeft = "5px"
-
+            settingInput.style.margin = "5px 5px 5px 5px"
+    
             settingInput.addEventListener("input", function() {
                 GM_setValue(id, settingInput.value); // Save the value of the text input
             });
@@ -299,11 +315,11 @@ document.addEventListener('mouseup', saveMenuPosition);
             settingInput.checked = GM_getValue(id, false);
             settingItem.style.display = "flex";
             settingItem.style.alignItems = "center";
-
+    
             // Add switch style (no span now)
             settingItem.appendChild(settingLabel);
             settingItem.appendChild(settingInput);
-
+    
             // Style the switch input to look like a toggle switch
             settingInput.style.marginLeft = "10px";
             settingInput.style.width = "34px";
@@ -313,35 +329,55 @@ document.addEventListener('mouseup', saveMenuPosition);
             settingInput.style.backgroundColor = "#ccc";
             settingInput.style.borderRadius = "34px";
             settingInput.style.transition = "0.4s";
-
+    
             // Apply the background color based on the saved value
             if (settingInput.checked) {
-                settingInput.style.backgroundColor = "#4caf50"; // Green when checked
+                settingInput.style.backgroundColor = "#1abc9c"; // Green when checked
             } else {
                 settingInput.style.backgroundColor = "#ccc"; // Gray when unchecked
             }
-
+    
             settingInput.addEventListener("change", function() {
                 GM_setValue(id, settingInput.checked); // Save the state of the switch
                 if (settingInput.checked) {
-                    settingInput.style.backgroundColor = "#4caf50"; // Green when checked
+                    settingInput.style.backgroundColor = "#1abc9c"; // Green when checked
                 } else {
                     settingInput.style.backgroundColor = "#ccc"; // Gray when unchecked
                 }
             });
+        } else if (type === "dropdown") {
+            // Create a dropdown menu
+            settingInput = document.createElement("select");
+            settingInput.style.marginLeft = "5px"
+            settingInput.id = id;
+    
+            // Add options to the dropdown
+            placeholder.forEach(option => {
+                const optionElement = document.createElement("option");
+                optionElement.value = option.value;
+                optionElement.textContent = option.label;
+                settingInput.appendChild(optionElement);
+            });
+    
+            // Set the selected value based on the saved state
+            settingInput.value = GM_getValue(id, placeholder[0].value);
+    
+            settingInput.addEventListener("change", function() {
+                GM_setValue(id, settingInput.value); // Save the selected value of the dropdown
+            });
         }
-
+    
         // Append the label and input to the setting item
         settingItem.appendChild(settingLabel);
         settingItem.appendChild(settingInput);
-
+    
         // Append setting item to the corresponding tab content
         tabContent.appendChild(settingItem);
-    }
+    }    
 
     // Function to add a label that displays stats and can be updated
-    function addLabel(labelText, id, tab = "general") {
-        const tabContent = menu.querySelector(`#${tab}`);
+    function addLabel(labelText, id, tab = "general", contentSide = '2') {
+        const tabContent = menu.querySelector(`#${tab + contentSide}`);
         if (!tabContent) {
             console.error(`Tab content for "${tab}" not found.`);
             return;
@@ -366,10 +402,14 @@ document.addEventListener('mouseup', saveMenuPosition);
         };
     }
 
-    // Example usage: Adding settings dynamically
+    // addSetting(type, label, id, placeholder = "", tab = "general", contentSide = '1')
     addSetting("checkbox", "Enable Feature", "enable-feature", "", "general");
-    addSetting("text", "Username", "username", "Enter your username", "advanced");
-    addSetting("switch", "Enable Dark Mode", "dark-mode", "", "general");
+    addSetting("text", "Sell Price", "sellPrice", "250", "autoSell", '2');
+    addSetting("switch", "Enable Auto Sell", "toggleSell", "", "autoSell");
+    addSetting("dropdown", "Currency", "currency", [
+        { value: "money", label: "Money" },
+        { value: "tokens", label: "Tokens" }
+    ], "autoSell", '2')
 
     // Example usage: Adding a label
     const updateStatsLabel = addLabel("Stats: Loading...", "stats-label", "general");
