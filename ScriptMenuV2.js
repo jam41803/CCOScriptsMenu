@@ -70,7 +70,7 @@
 
     // Style for tab button (pill-like appearance)
     const tabStyle = {
-        padding: "10px 20px",
+        padding: "5px 10px",
         backgroundColor: secondaryColor,  // Inactive tab background color
         border: "2px solid #34495e",
         color: "white",
@@ -456,6 +456,7 @@
     addSetting("number", "Dice Bet", "diceBet", "100", "casino", "2")
     addSetting("number", "BJ Bet", "bjBet", "100", "casino", "2")
     addSetting("number", "Auto Upgrade Multiplier", "upgradeMult", "2", "casino", "2")
+    addSetting("number", "Upgrade Tokens", "upgradeTokens", "1", "casino", "2")
 
 
     // Example usage: Adding a label
