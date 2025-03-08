@@ -18,10 +18,11 @@
 (function () {
     'use strict';
     var primaryColor = "#1abc9c"
+    var primaryAccent = "#1abc9c"
     var secondaryColor = "#34495e"
     var backgroundColor = "#2c3e50"
+    var closeButtonColor = "#e74c3c"
 
-    // Create the settings menu container
     const menu = document.createElement("div");
     menu.innerHTML = `
         <div id="settings-menu" class="settings-menu">
@@ -37,7 +38,6 @@
             </div>
         </div>
     `;
-    // Apply basic styles for the menu
     Object.assign(menu.style, {
         background: backgroundColor,
         color: "white",
@@ -48,33 +48,32 @@
         left: "50px",
         fontFamily: "Arial, sans-serif",
         zIndex: 9999,
-        overflow: "auto",  // Allow scrolling if content overflows
+        overflow: "auto",
         height: "50%",
         width: "30%",
         maxHeight: "80vh",
         overflowY: "auto"
     });
 
-    // Style for tabs (pill style)
     const tabs = menu.querySelector("#tabs");
     Object.assign(tabs.style, {
         display: "flex",
         marginBottom: "10px",
         justifyContent: "center",
-        backgroundColor: secondaryColor,  // Inactive tab background color
-        borderRadius: "5px",  // Rounded corners for the tab holder
-        padding: "5px",  // Padding to give some space between tabs
+        backgroundColor: secondaryColor,
+        borderRadius: "5px",  
+        padding: "5px", 
         zIndex: "1000"
 
     });
 
-    // Style for tab button (pill-like appearance)
+    
     const tabStyle = {
         padding: "5px 10px",
-        backgroundColor: secondaryColor,  // Inactive tab background color
+        backgroundColor: secondaryColor,  
         border: "2px solid #34495e",
         color: "white",
-        borderRadius: "5px",  // Rounded corners for pill shape
+        borderRadius: "5px", 
         cursor: "pointer",
         textAlign: "center",
         flex: "1",
@@ -83,22 +82,22 @@
         transition: "background-color 0.3s ease, color 0.3s ease"
     };
 
-    // Style for active tab
+
     const activeTabStyle = {
-        backgroundColor: primaryColor,  // Active tab color (greenish)
-        borderColor: primaryColor,      // Active border color
-        color: "#fff"                // Active text color
+        backgroundColor: primaryColor,
+        borderColor: primaryAccent,    
+        color: "#fff"             
     };
 
     // Add hover effect for tabs
     const tabHoverStyle = {
-        backgroundColor: backgroundColor, // Hover color
-        color: "#ecf0f1"             // Hover text color
+        backgroundColor: backgroundColor, 
+        color: "#ecf0f1"           
     };
 
-    // Style for tab content area
+
     const settingsContent = menu.querySelector("#settings-content");
-    settingsContent.style.position = "relative"; // Allow positioning of tab content
+    settingsContent.style.position = "relative"; 
     settingsContent.style.display = "grid";
 
     // Add hover effect for close button
@@ -108,10 +107,10 @@
     closeButton.style.color = "white";
     closeButton.style.padding = "8px 12px";
     closeButton.style.cursor = "pointer";
-    closeButton.style.borderRadius = "5px"; // Rounded corners for close button
-    closeButton.style.position = "absolute"; // Position the button
-    closeButton.style.bottom = "15px"; // 15px from the bottom
-    closeButton.style.right = "15px"; // 15px from the right
+    closeButton.style.borderRadius = "5px"; 
+    closeButton.style.position = "absolute"; 
+    closeButton.style.bottom = "15px";
+    closeButton.style.right = "15px"; 
 
     const closeLabel = menu.querySelector("#close-label");
     closeLabel.style.left = "15px";
@@ -126,7 +125,7 @@
             isDragging = true;
             offsetX = e.clientX - element.getBoundingClientRect().left;
             offsetY = e.clientY - element.getBoundingClientRect().top;
-            element.style.cursor = "grabbing";  // Change cursor when dragging
+            element.style.cursor = "grabbing"; 
         });
 
         document.addEventListener("mousemove", (e) => {
@@ -140,11 +139,11 @@
 
         document.addEventListener("mouseup", () => {
             isDragging = false;
-            element.style.cursor = "grab";  // Revert cursor
+            element.style.cursor = "grab";
         });
     }
 
-    // Make the menu draggable by the tabs section
+
     makeDraggable(menu);
     makeDraggable(tabs)
 
@@ -160,25 +159,21 @@
         menu.style.top = top;
     }
 
-    restoreMenuPosition(); // Call this at the start
+    restoreMenuPosition();
 
     document.addEventListener("mouseup", saveMenuPosition);
 
-    // Append the menu to the body
+
     document.body.appendChild(menu);
 
-    // Function to add a new tab dynamically
     function addTab(tabId, tabTitle) {
-        // Create the tab button
         const tabButton = document.createElement("button");
         tabButton.classList.add("tab-button");
         tabButton.setAttribute("data-tab", tabId);
         tabButton.textContent = tabTitle;
 
-        // Apply pill style to tab
         Object.assign(tabButton.style, tabStyle);
 
-        // Add hover effect
         tabButton.addEventListener("mouseover", () => {
             Object.assign(tabButton.style, tabHoverStyle);
         });
@@ -189,48 +184,40 @@
             }
         });
 
-        // Add tab click listener
         tabButton.addEventListener("click", () => {
-            // Hide all tab content
             const tabContents = menu.querySelectorAll(".tab-content");
             tabContents.forEach(content => {
                 content.style.display = "none";
-                content.style.opacity = "0"; // Set opacity to 0 for smooth transition
-                content.style.transform = "translateX(-100%)"; // Slide out
+                content.style.opacity = "0"; 
+                content.style.transform = "translateX(-100%)"; 
             });
 
-            // Show the selected tab content with transition
             const activeTab1 = menu.querySelector(`#${tabId + "1"}`);
             activeTab1.style.display = "block";
-            activeTab1.style.opacity = "1"; // Set opacity to 1 for visible content
-            activeTab1.style.transform = "translateX(0)"; // Slide in
+            activeTab1.style.opacity = "1"; 
+            activeTab1.style.transform = "translateX(0)"; 
 
             const activeTab2 = menu.querySelector(`#${tabId + "2"}`);
             activeTab2.style.display = "block";
-            activeTab2.style.opacity = "1"; // Set opacity to 1 for visible content
-            activeTab2.style.transform = "translateX(0)"; // Slide in
+            activeTab2.style.opacity = "1";
+            activeTab2.style.transform = "translateX(0)"; 
 
-            // Remove the "active" class from all tabs and add it to the selected one
             const allTabButtons = tabs.querySelectorAll(".tab-button");
             allTabButtons.forEach(button => {
                 button.classList.remove("active");
-                // Reset background color for all tabs
                 Object.assign(button.style, tabStyle);
             });
             tabButton.classList.add("active");
-            // Apply active tab styles
             Object.assign(tabButton.style, activeTabStyle);
         });
 
-        // Add the tab button to the tabs container
         tabs.appendChild(tabButton);
 
-        // Create the content container for this tab
         const tabContent = document.createElement("div");
         tabContent.id = tabId + "1";
         tabContent.classList.add("tab-content");
-        tabContent.style.display = "none"; // Hide by default
-        tabContent.style.position = "absolute"; // Position the content
+        tabContent.style.display = "none"; 
+        tabContent.style.position = "absolute"; 
         tabContent.style.top = "0";
         tabContent.style.left = "0";
         tabContent.style.width = "50%";
@@ -239,31 +226,27 @@
         const tabContent2 = document.createElement("div");
         tabContent2.id = tabId + "2";
         tabContent2.classList.add("tab-content");
-        tabContent2.style.display = "none"; // Hide by default
-        tabContent2.style.position = "absolute"; // Position the content
+        tabContent2.style.display = "none";
+        tabContent2.style.position = "absolute"; 
         tabContent2.style.top = "0";
         tabContent2.style.right = "0";
         tabContent2.style.width = "50%";
         tabContent2.style.height = "100%";
 
-        // Add the content container to the settings content area
         settingsContent.appendChild(tabContent);
         settingsContent.appendChild(tabContent2);
 
-        // Set the first tab as active
         if (tabs.querySelectorAll(".tab-button").length === 1) {
             tabButton.classList.add("active");
-            // Apply active tab styles
             Object.assign(tabButton.style, activeTabStyle);
-            tabContent.style.display = "block"; // Show first tab content
-            tabContent.style.opacity = "1"; // Make first tab content visible
-            tabContent2.style.display = "block"; // Show first tab content
-            tabContent2.style.opacity = "1"; // Make first tab content visible
+            tabContent.style.display = "block";
+            tabContent.style.opacity = "1"; 
+            tabContent2.style.display = "block";
+            tabContent2.style.opacity = "1";
         }
     }
 
     function addSetting(type, label, id, placeholder = "", tab = "general", contentSide = "1") {
-        // Ensure the tab content exists
         const tabContent = menu.querySelector(`#${tab + contentSide}`);
         if (!tabContent) {
             console.error(`Tab content for "${tab}" not found.`);
@@ -279,20 +262,17 @@
             settingItem.style.justifyContent = "flex-start"
         }
 
-        // Create label
         const settingLabel = document.createElement("label");
         settingLabel.setAttribute("for", id);
         settingLabel.textContent = label;
 
         let settingInput;
 
-        // Create the setting input based on the type
         if (type === "number") {
             settingInput = document.createElement("input");
             settingInput.type = "number";
             settingInput.placeholder = placeholder;
             settingInput.id = id;
-            // Load the saved value for the text input
             settingInput.value = GM_getValue(id, "");
             settingInput.style.margin = "5px 5px 5px 5px"
             settingInput.style.border = `1px solid ${primaryColor}`
@@ -303,7 +283,7 @@
 
 
             settingInput.addEventListener("input", function () {
-                GM_setValue(id, settingInput.value); // Save the value of the text input
+                GM_setValue(id, settingInput.value); 
             });
         } else if (type === "text") {
             settingInput = document.createElement("input");
@@ -313,28 +293,24 @@
             if (contentSide == 2) {
                 settingInput.style.marginLeft = "auto"
             }
-            // Load the saved value for the text input
             settingInput.value = GM_getValue(id, "");
             settingInput.style.margin = "5px 5px 5px 5px"
             settingInput.style.border = `1px solid ${primaryColor}`
 
 
             settingInput.addEventListener("input", function () {
-                GM_setValue(id, settingInput.value); // Save the value of the text input
+                GM_setValue(id, settingInput.value); 
             });
         } else if (type === "switch") {
             settingInput = document.createElement("input");
             settingInput.type = "checkbox";
             settingInput.classList.add("switch");
             settingInput.id = id;
-            // Load the saved state of the switch
             settingInput.checked = GM_getValue(id, false);
 
-            // Add switch style (no span now)
             settingItem.appendChild(settingLabel);
             settingItem.appendChild(settingInput);
 
-            // Style the switch input to look like a toggle switch
             settingInput.style.marginLeft = "10px";
             settingInput.style.width = "34px";
             settingInput.style.height = "20px";
@@ -347,23 +323,21 @@
             settingInput.style.border = `1px solid ${primaryColor}`
 
 
-            // Apply the background color based on the saved value
             if (settingInput.checked) {
-                settingInput.style.backgroundColor = primaryColor; // Green when checked
+                settingInput.style.backgroundColor = primaryColor;
             } else {
-                settingInput.style.backgroundColor = "#ccc"; // Gray when unchecked
+                settingInput.style.backgroundColor = "#ccc"; 
             }
 
             settingInput.addEventListener("change", function () {
-                GM_setValue(id, settingInput.checked); // Save the state of the switch
+                GM_setValue(id, settingInput.checked);
                 if (settingInput.checked) {
-                    settingInput.style.backgroundColor = primaryColor; // Green when checked
+                    settingInput.style.backgroundColor = primaryColor; 
                 } else {
-                    settingInput.style.backgroundColor = "#ccc"; // Gray when unchecked
+                    settingInput.style.backgroundColor = "#ccc"; 
                 }
             });
         } else if (type === "dropdown") {
-            // Create a dropdown menu
             settingInput = document.createElement("select");
             settingInput.style.marginLeft = "5px"
             settingInput.id = id;
@@ -371,7 +345,6 @@
             if (contentSide == 2) {
                 settingInput.style.marginLeft = "auto"
             }
-            // Add options to the dropdown
             placeholder.forEach(option => {
                 const optionElement = document.createElement("option");
                 optionElement.value = option.value;
@@ -379,23 +352,19 @@
                 settingInput.appendChild(optionElement);
             });
 
-            // Set the selected value based on the saved state
             settingInput.value = GM_getValue(id, placeholder[0].value);
 
             settingInput.addEventListener("change", function () {
-                GM_setValue(id, settingInput.value); // Save the selected value of the dropdown
+                GM_setValue(id, settingInput.value);
             });
         }
 
-        // Append the label and input to the setting item
         settingItem.appendChild(settingLabel);
         settingItem.appendChild(settingInput);
 
-        // Append setting item to the corresponding tab content
         tabContent.appendChild(settingItem);
     }
 
-    // Function to add a label that displays stats and can be updated
     function addLabel(labelText, id, tab = "general", contentSide = "2") {
         const tabContent = menu.querySelector(`#${tab + contentSide}`);
         if (!tabContent) {
@@ -406,44 +375,41 @@
         const labelItem = document.createElement("div");
         labelItem.classList.add("label-item");
 
-        // Create the label element
         const label = document.createElement("span");
-        label.id = id; // Add id to the label
+        label.id = id; 
         label.textContent = labelText;
-        label.style.color = "#ecf0f1";  // Light text color for the label
+        label.style.color = "#ecf0f1";  
         labelItem.appendChild(label);
         if (contentSide == 1) {
             labelItem.style.justifyContent = "flex-end"
         } else {
             labelItem.style.justifyContent = "flex-start"
         }
-        // Append label to the specified tab content
         tabContent.appendChild(labelItem);
 
-        // Function to update the label text dynamically
         return function updateLabel(newText) {
             label.textContent = newText;
         };
     }
 
-    // Add the first tab and content as an example
     addTab("general", "General");
-    addTab("autoSell", "Auto Sell");
+    addTab("cases", "Cases");
     addTab("casino", "Casino");
     addTab("martingale", "Martingale");
     addTab("customize", "Customization")
 
+
     // addSetting(type, label, id, placeholder = "", tab = "general", contentSide = "1")
-    addSetting("switch", "Enable Feature", "enable-feature", "", "general");
-    addSetting("number", "Sell Price", "sellPrice", "250", "autoSell", "2");
-    addSetting("switch", "Enable Auto Sell", "toggleSell", "", "autoSell");
+    addSetting("switch", "Auto Click", "toggleAutoClick", "", "general")
+    addSetting("switch", "Auto Vault", "toggleVault", "", "general")
+    addSetting("switch", "Auto Collect Armory", "autoArmory", "", "general");
+    addSetting("number", "Sell Price", "sellPrice", "250", "cases", "2");
+    addSetting("switch", "Enable Auto Sell", "toggleSell", "", "cases");
     addSetting("dropdown", "Currency", "currency", [
         { value: "money", label: "Money" },
         { value: "tokens", label: "Tokens" }
-    ], "autoSell", "2")
-    addSetting("switch", "Enable Case Selling", "toggleCaseSell", "", "autoSell")
-    addSetting("switch", "Auto Vault", "toggleVault", "", "general")
-    addSetting("switch", "Auto Click", "toggleAutoClick", "", "general")
+    ], "cases", "2")
+    addSetting("switch", "Enable Case Selling", "toggleCaseSell", "", "cases")
     addSetting("dropdown", "Click Type", "clickType", [
         { value: "money", label: "Money" },
         { value: "cases", label: "Cases" }
@@ -455,26 +421,22 @@
     addSetting("number", "Coinflip Bet", "coinflipBet", "100", "casino", "2")
     addSetting("number", "Dice Bet", "diceBet", "100", "casino", "2")
     addSetting("number", "BJ Bet", "bjBet", "100", "casino", "2")
-    addSetting("number", "Auto Upgrade Multiplier", "upgradeMult", "2", "casino", "2")
+    addSetting("number", "Upgrade Multiplier", "upgradeMult", "2", "casino", "2")
     addSetting("number", "Upgrade Tokens", "upgradeTokens", "1", "casino", "2")
 
 
-    // Example usage: Adding a label
     const updateStatsLabel = addLabel("Stats: Loading...", "stats-label", "general");
 
-    // Simulate updating the label after 3 seconds
     setTimeout(() => {
         updateStatsLabel("Stats: Loaded Successfully!");
     }, 3000);
 
-    // Keybind for toggling menu visibility (Alt + G)
     window.addEventListener("keydown", function (e) {
         if (e.altKey && e.key === "g") {
             menu.style.display = (menu.style.display === "none") ? "block" : "none";
         }
     });
 
-    // Close button functionality
     closeButton.addEventListener("click", function () {
         menu.style.display = "none";
     });
