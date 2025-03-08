@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Kenny's CCO Menu
+// @name         Kenny"s CCO Menu
 // @namespace    jam41803
 // @version      1.0
 // @description  CCO Script Menu
@@ -15,8 +15,11 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-(function() {
+(function () {
     'use strict';
+    var primaryColor = "#1abc9c"
+    var secondaryColor = "#34495e"
+    var backgroundColor = "#2c3e50"
 
     // Create the settings menu container
     const menu = document.createElement("div");
@@ -36,7 +39,7 @@
     `;
     // Apply basic styles for the menu
     Object.assign(menu.style, {
-        background: "#2c3e50",
+        background: backgroundColor,
         color: "white",
         padding: "15px",
         borderRadius: "10px",
@@ -58,7 +61,7 @@
         display: "flex",
         marginBottom: "10px",
         justifyContent: "center",
-        backgroundColor: "#34495e",  // Inactive tab background color
+        backgroundColor: secondaryColor,  // Inactive tab background color
         borderRadius: "5px",  // Rounded corners for the tab holder
         padding: "5px",  // Padding to give some space between tabs
         zIndex: "1000"
@@ -68,7 +71,7 @@
     // Style for tab button (pill-like appearance)
     const tabStyle = {
         padding: "10px 20px",
-        backgroundColor: "#34495e",  // Inactive tab background color
+        backgroundColor: secondaryColor,  // Inactive tab background color
         border: "2px solid #34495e",
         color: "white",
         borderRadius: "5px",  // Rounded corners for pill shape
@@ -82,14 +85,14 @@
 
     // Style for active tab
     const activeTabStyle = {
-        backgroundColor: "#1abc9c",  // Active tab color (greenish)
-        borderColor: "#1abc9c",      // Active border color
+        backgroundColor: primaryColor,  // Active tab color (greenish)
+        borderColor: primaryColor,      // Active border color
         color: "#fff"                // Active text color
     };
 
     // Add hover effect for tabs
     const tabHoverStyle = {
-        backgroundColor: "#2c3e50", // Hover color
+        backgroundColor: backgroundColor, // Hover color
         color: "#ecf0f1"             // Hover text color
     };
 
@@ -119,14 +122,14 @@
         let isDragging = false;
         let offsetX, offsetY;
 
-        element.addEventListener('mousedown', (e) => {
+        element.addEventListener("mousedown", (e) => {
             isDragging = true;
             offsetX = e.clientX - element.getBoundingClientRect().left;
             offsetY = e.clientY - element.getBoundingClientRect().top;
-            element.style.cursor = 'grabbing';  // Change cursor when dragging
+            element.style.cursor = "grabbing";  // Change cursor when dragging
         });
 
-        document.addEventListener('mousemove', (e) => {
+        document.addEventListener("mousemove", (e) => {
             if (isDragging) {
                 const left = e.clientX - offsetX;
                 const top = e.clientY - offsetY;
@@ -135,9 +138,9 @@
             }
         });
 
-        document.addEventListener('mouseup', () => {
+        document.addEventListener("mouseup", () => {
             isDragging = false;
-            element.style.cursor = 'grab';  // Revert cursor
+            element.style.cursor = "grab";  // Revert cursor
         });
     }
 
@@ -146,8 +149,8 @@
     makeDraggable(tabs)
 
     function saveMenuPosition() {
-    GM_setValue("menuLeft", menu.style.left);
-    GM_setValue("menuTop", menu.style.top);
+        GM_setValue("menuLeft", menu.style.left);
+        GM_setValue("menuTop", menu.style.top);
     }
 
     function restoreMenuPosition() {
@@ -157,9 +160,9 @@
         menu.style.top = top;
     }
 
-restoreMenuPosition(); // Call this at the start
+    restoreMenuPosition(); // Call this at the start
 
-document.addEventListener('mouseup', saveMenuPosition);
+    document.addEventListener("mouseup", saveMenuPosition);
 
     // Append the menu to the body
     document.body.appendChild(menu);
@@ -181,7 +184,7 @@ document.addEventListener('mouseup', saveMenuPosition);
         });
 
         tabButton.addEventListener("mouseout", () => {
-            if (!tabButton.classList.contains('active')) {
+            if (!tabButton.classList.contains("active")) {
                 Object.assign(tabButton.style, tabStyle);
             }
         });
@@ -197,17 +200,17 @@ document.addEventListener('mouseup', saveMenuPosition);
             });
 
             // Show the selected tab content with transition
-            const activeTab1 = menu.querySelector(`#${tabId + '1'}`);
+            const activeTab1 = menu.querySelector(`#${tabId + "1"}`);
             activeTab1.style.display = "block";
             activeTab1.style.opacity = "1"; // Set opacity to 1 for visible content
             activeTab1.style.transform = "translateX(0)"; // Slide in
 
-            const activeTab2 = menu.querySelector(`#${tabId + '2'}`);
+            const activeTab2 = menu.querySelector(`#${tabId + "2"}`);
             activeTab2.style.display = "block";
             activeTab2.style.opacity = "1"; // Set opacity to 1 for visible content
             activeTab2.style.transform = "translateX(0)"; // Slide in
 
-            // Remove the 'active' class from all tabs and add it to the selected one
+            // Remove the "active" class from all tabs and add it to the selected one
             const allTabButtons = tabs.querySelectorAll(".tab-button");
             allTabButtons.forEach(button => {
                 button.classList.remove("active");
@@ -224,7 +227,7 @@ document.addEventListener('mouseup', saveMenuPosition);
 
         // Create the content container for this tab
         const tabContent = document.createElement("div");
-        tabContent.id = tabId + '1';
+        tabContent.id = tabId + "1";
         tabContent.classList.add("tab-content");
         tabContent.style.display = "none"; // Hide by default
         tabContent.style.position = "absolute"; // Position the content
@@ -234,7 +237,7 @@ document.addEventListener('mouseup', saveMenuPosition);
         tabContent.style.height = "100%";
 
         const tabContent2 = document.createElement("div");
-        tabContent2.id = tabId + '2';
+        tabContent2.id = tabId + "2";
         tabContent2.classList.add("tab-content");
         tabContent2.style.display = "none"; // Hide by default
         tabContent2.style.position = "absolute"; // Position the content
@@ -259,51 +262,64 @@ document.addEventListener('mouseup', saveMenuPosition);
         }
     }
 
-    // Add the first tab and content as an example
-    addTab("general", "General");
-    addTab("autoSell", "Auto Sell");
-
-    // Function to add a setting (with save functionality)
-    function addSetting(type, label, id, placeholder = "", tab = "general", contentSide = '1') {
+    function addSetting(type, label, id, placeholder = "", tab = "general", contentSide = "1") {
         // Ensure the tab content exists
         const tabContent = menu.querySelector(`#${tab + contentSide}`);
         if (!tabContent) {
             console.error(`Tab content for "${tab}" not found.`);
             return;
         }
-    
+
         const settingItem = document.createElement("div");
         settingItem.classList.add("setting-item");
-    
+        settingItem.style.display = "flex"
+        if (contentSide == 1) {
+            settingItem.style.justifyContent = "flex-end"
+        } else {
+            settingItem.style.justifyContent = "flex-start"
+        }
+
         // Create label
         const settingLabel = document.createElement("label");
         settingLabel.setAttribute("for", id);
         settingLabel.textContent = label;
-    
+
         let settingInput;
-    
+
         // Create the setting input based on the type
-        if (type === "checkbox") {
+        if (type === "number") {
             settingInput = document.createElement("input");
-            settingInput.type = "checkbox";
+            settingInput.type = "number";
+            settingInput.placeholder = placeholder;
             settingInput.id = id;
-            // Load the saved state of the checkbox
-            settingInput.checked = GM_getValue(id, false);
-            settingInput.style.marginRight = "10px"; // Space between checkbox and label
-    
-            settingInput.addEventListener("change", function() {
-                GM_setValue(id, settingInput.checked); // Save the state of the checkbox
+            // Load the saved value for the text input
+            settingInput.value = GM_getValue(id, "");
+            settingInput.style.margin = "5px 5px 5px 5px"
+            settingInput.style.border = `1px solid ${primaryColor}`
+            settingInput.style.width = "50%";
+            if (contentSide == 2) {
+                settingInput.style.marginLeft = "auto"
+            }
+
+
+            settingInput.addEventListener("input", function () {
+                GM_setValue(id, settingInput.value); // Save the value of the text input
             });
         } else if (type === "text") {
             settingInput = document.createElement("input");
             settingInput.type = "text";
             settingInput.placeholder = placeholder;
             settingInput.id = id;
+            if (contentSide == 2) {
+                settingInput.style.marginLeft = "auto"
+            }
             // Load the saved value for the text input
             settingInput.value = GM_getValue(id, "");
             settingInput.style.margin = "5px 5px 5px 5px"
-    
-            settingInput.addEventListener("input", function() {
+            settingInput.style.border = `1px solid ${primaryColor}`
+
+
+            settingInput.addEventListener("input", function () {
                 GM_setValue(id, settingInput.value); // Save the value of the text input
             });
         } else if (type === "switch") {
@@ -313,13 +329,11 @@ document.addEventListener('mouseup', saveMenuPosition);
             settingInput.id = id;
             // Load the saved state of the switch
             settingInput.checked = GM_getValue(id, false);
-            settingItem.style.display = "flex";
-            settingItem.style.alignItems = "center";
-    
+
             // Add switch style (no span now)
             settingItem.appendChild(settingLabel);
             settingItem.appendChild(settingInput);
-    
+
             // Style the switch input to look like a toggle switch
             settingInput.style.marginLeft = "10px";
             settingInput.style.width = "34px";
@@ -329,18 +343,21 @@ document.addEventListener('mouseup', saveMenuPosition);
             settingInput.style.backgroundColor = "#ccc";
             settingInput.style.borderRadius = "34px";
             settingInput.style.transition = "0.4s";
-    
+            settingInput.style.right = "5px"
+            settingInput.style.border = `1px solid ${primaryColor}`
+
+
             // Apply the background color based on the saved value
             if (settingInput.checked) {
-                settingInput.style.backgroundColor = "#1abc9c"; // Green when checked
+                settingInput.style.backgroundColor = primaryColor; // Green when checked
             } else {
                 settingInput.style.backgroundColor = "#ccc"; // Gray when unchecked
             }
-    
-            settingInput.addEventListener("change", function() {
+
+            settingInput.addEventListener("change", function () {
                 GM_setValue(id, settingInput.checked); // Save the state of the switch
                 if (settingInput.checked) {
-                    settingInput.style.backgroundColor = "#1abc9c"; // Green when checked
+                    settingInput.style.backgroundColor = primaryColor; // Green when checked
                 } else {
                     settingInput.style.backgroundColor = "#ccc"; // Gray when unchecked
                 }
@@ -350,7 +367,10 @@ document.addEventListener('mouseup', saveMenuPosition);
             settingInput = document.createElement("select");
             settingInput.style.marginLeft = "5px"
             settingInput.id = id;
-    
+            settingInput.style.border = `1px solid ${primaryColor}`
+            if (contentSide == 2) {
+                settingInput.style.marginLeft = "auto"
+            }
             // Add options to the dropdown
             placeholder.forEach(option => {
                 const optionElement = document.createElement("option");
@@ -358,25 +378,25 @@ document.addEventListener('mouseup', saveMenuPosition);
                 optionElement.textContent = option.label;
                 settingInput.appendChild(optionElement);
             });
-    
+
             // Set the selected value based on the saved state
             settingInput.value = GM_getValue(id, placeholder[0].value);
-    
-            settingInput.addEventListener("change", function() {
+
+            settingInput.addEventListener("change", function () {
                 GM_setValue(id, settingInput.value); // Save the selected value of the dropdown
             });
         }
-    
+
         // Append the label and input to the setting item
         settingItem.appendChild(settingLabel);
         settingItem.appendChild(settingInput);
-    
+
         // Append setting item to the corresponding tab content
         tabContent.appendChild(settingItem);
-    }    
+    }
 
     // Function to add a label that displays stats and can be updated
-    function addLabel(labelText, id, tab = "general", contentSide = '2') {
+    function addLabel(labelText, id, tab = "general", contentSide = "2") {
         const tabContent = menu.querySelector(`#${tab + contentSide}`);
         if (!tabContent) {
             console.error(`Tab content for "${tab}" not found.`);
@@ -392,7 +412,11 @@ document.addEventListener('mouseup', saveMenuPosition);
         label.textContent = labelText;
         label.style.color = "#ecf0f1";  // Light text color for the label
         labelItem.appendChild(label);
-
+        if (contentSide == 1) {
+            labelItem.style.justifyContent = "flex-end"
+        } else {
+            labelItem.style.justifyContent = "flex-start"
+        }
         // Append label to the specified tab content
         tabContent.appendChild(labelItem);
 
@@ -402,14 +426,37 @@ document.addEventListener('mouseup', saveMenuPosition);
         };
     }
 
-    // addSetting(type, label, id, placeholder = "", tab = "general", contentSide = '1')
-    addSetting("checkbox", "Enable Feature", "enable-feature", "", "general");
-    addSetting("text", "Sell Price", "sellPrice", "250", "autoSell", '2');
+    // Add the first tab and content as an example
+    addTab("general", "General");
+    addTab("autoSell", "Auto Sell");
+    addTab("casino", "Casino");
+    addTab("martingale", "Martingale");
+    addTab("customize", "Customization")
+
+    // addSetting(type, label, id, placeholder = "", tab = "general", contentSide = "1")
+    addSetting("switch", "Enable Feature", "enable-feature", "", "general");
+    addSetting("number", "Sell Price", "sellPrice", "250", "autoSell", "2");
     addSetting("switch", "Enable Auto Sell", "toggleSell", "", "autoSell");
     addSetting("dropdown", "Currency", "currency", [
         { value: "money", label: "Money" },
         { value: "tokens", label: "Tokens" }
-    ], "autoSell", '2')
+    ], "autoSell", "2")
+    addSetting("switch", "Enable Case Selling", "toggleCaseSell", "", "autoSell")
+    addSetting("switch", "Auto Vault", "toggleVault", "", "general")
+    addSetting("switch", "Auto Click", "toggleAutoClick", "", "general")
+    addSetting("dropdown", "Click Type", "clickType", [
+        { value: "money", label: "Money" },
+        { value: "cases", label: "Cases" }
+    ], "general", "2")
+    addSetting("switch", "Auto Coinflip", "autoCoinflip", "", "casino")
+    addSetting("switch", "Auto Dice", "autoDice", "", "casino")
+    addSetting("switch", "Auto BJ", "autoBJ", "", "casino")
+    addSetting("switch", "Auto Upgrade", "autoUpgrade", "", "casino")
+    addSetting("number", "Coinflip Bet", "coinflipBet", "100", "casino", "2")
+    addSetting("number", "Dice Bet", "diceBet", "100", "casino", "2")
+    addSetting("number", "BJ Bet", "bjBet", "100", "casino", "2")
+    addSetting("number", "Auto Upgrade Multiplier", "upgradeMult", "2", "casino", "2")
+
 
     // Example usage: Adding a label
     const updateStatsLabel = addLabel("Stats: Loading...", "stats-label", "general");
@@ -420,14 +467,14 @@ document.addEventListener('mouseup', saveMenuPosition);
     }, 3000);
 
     // Keybind for toggling menu visibility (Alt + G)
-    window.addEventListener("keydown", function(e) {
+    window.addEventListener("keydown", function (e) {
         if (e.altKey && e.key === "g") {
             menu.style.display = (menu.style.display === "none") ? "block" : "none";
         }
     });
 
     // Close button functionality
-    closeButton.addEventListener("click", function() {
+    closeButton.addEventListener("click", function () {
         menu.style.display = "none";
     });
 })();
