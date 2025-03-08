@@ -17,11 +17,11 @@
 
 (function () {
     'use strict';
-    var primaryColor = "#1abc9c"
-    var primaryAccent = "#1abc9c"
-    var secondaryColor = "#34495e"
-    var backgroundColor = "#2c3e50"
-    var closeButtonColor = "#e74c3c"
+    var primaryColor = GM_getValue("primaryColor", "#1abc9c");
+    var primaryAccent = GM_getValue("primaryAccent", "#1abc9c");
+    var secondaryColor = GM_getValue("secondaryColor", "#34495e");
+    var backgroundColor = GM_getValue("backgroundColor", "#2c3e50");
+    var closeButtonColor = GM_getValue("closeButtonColor", "#e74c3c");
 
     const menu = document.createElement("div");
     menu.innerHTML = `
@@ -71,7 +71,7 @@
     const tabStyle = {
         padding: "5px 10px",
         backgroundColor: secondaryColor,  
-        border: "2px solid #34495e",
+        border: `2px solid ${secondaryColor}`,
         color: "white",
         borderRadius: "5px", 
         cursor: "pointer",
@@ -246,6 +246,68 @@
         }
     }
 
+    function addCustomizeTab(tabId, tabTitle) {
+        const tabButton = document.createElement("button");
+        tabButton.classList.add("tab-button");
+        tabButton.setAttribute("data-tab", tabId);
+        tabButton.textContent = tabTitle;
+
+        Object.assign(tabButton.style, tabStyle);
+
+        tabButton.addEventListener("mouseover", () => {
+            Object.assign(tabButton.style, tabHoverStyle);
+        });
+
+        tabButton.addEventListener("mouseout", () => {
+            if (!tabButton.classList.contains("active")) {
+                Object.assign(tabButton.style, tabStyle);
+            }
+        });
+
+        tabButton.addEventListener("click", () => {
+            const tabContents = menu.querySelectorAll(".tab-content");
+            tabContents.forEach(content => {
+                content.style.display = "none";
+                content.style.opacity = "0"; 
+                content.style.transform = "translateX(-100%)"; 
+            });
+
+            const activeTab1 = menu.querySelector(`#${tabId + "1"}`);
+            activeTab1.style.display = "block";
+            activeTab1.style.opacity = "1"; 
+            activeTab1.style.transform = "translateX(0)"; 
+
+            const allTabButtons = tabs.querySelectorAll(".tab-button");
+            allTabButtons.forEach(button => {
+                button.classList.remove("active");
+                Object.assign(button.style, tabStyle);
+            });
+            tabButton.classList.add("active");
+            Object.assign(tabButton.style, activeTabStyle);
+        });
+
+        tabs.appendChild(tabButton);
+
+        const tabContent = document.createElement("div");
+        tabContent.id = tabId + "1";
+        tabContent.classList.add("tab-content");
+        tabContent.style.display = "none"; 
+        tabContent.style.position = "absolute"; 
+        tabContent.style.top = "0";
+        tabContent.style.left = "0";
+
+        settingsContent.appendChild(tabContent);
+
+        if (tabs.querySelectorAll(".tab-button").length === 1) {
+            tabButton.classList.add("active");
+            Object.assign(tabButton.style, activeTabStyle);
+            tabContent.style.display = "block";
+            tabContent.style.opacity = "1"; 
+            tabContent2.style.display = "block";
+            tabContent2.style.opacity = "1";
+        }
+    }
+
     function addSetting(type, label, id, placeholder = "", tab = "general", contentSide = "1") {
         const tabContent = menu.querySelector(`#${tab + contentSide}`);
         if (!tabContent) {
@@ -257,7 +319,7 @@
         settingItem.classList.add("setting-item");
         settingItem.style.display = "flex"
         if (contentSide == 1) {
-            settingItem.style.justifyContent = "flex-end"
+            settingItem.style.justifyContent = "flex-start"
         } else {
             settingItem.style.justifyContent = "flex-start"
         }
@@ -275,11 +337,9 @@
             settingInput.id = id;
             settingInput.value = GM_getValue(id, "");
             settingInput.style.margin = "5px 5px 5px 5px"
-            settingInput.style.border = `1px solid ${primaryColor}`
+            settingInput.style.border = `1px solid ${primaryAccent}`
             settingInput.style.width = "50%";
-            if (contentSide == 2) {
-                settingInput.style.marginLeft = "auto"
-            }
+            settingInput.style.marginLeft = "auto"
 
 
             settingInput.addEventListener("input", function () {
@@ -290,12 +350,10 @@
             settingInput.type = "text";
             settingInput.placeholder = placeholder;
             settingInput.id = id;
-            if (contentSide == 2) {
-                settingInput.style.marginLeft = "auto"
-            }
+            settingInput.style.marginLeft = "auto"
             settingInput.value = GM_getValue(id, "");
             settingInput.style.margin = "5px 5px 5px 5px"
-            settingInput.style.border = `1px solid ${primaryColor}`
+            settingInput.style.border = `1px solid ${primaryAccent}`
 
 
             settingInput.addEventListener("input", function () {
@@ -320,8 +378,8 @@
             settingInput.style.borderRadius = "34px";
             settingInput.style.transition = "0.4s";
             settingInput.style.right = "5px"
-            settingInput.style.border = `1px solid ${primaryColor}`
-
+            settingInput.style.border = `1px solid ${primaryAccent}`
+            settingInput.style.marginLeft = "auto"
 
             if (settingInput.checked) {
                 settingInput.style.backgroundColor = primaryColor;
@@ -341,10 +399,8 @@
             settingInput = document.createElement("select");
             settingInput.style.marginLeft = "5px"
             settingInput.id = id;
-            settingInput.style.border = `1px solid ${primaryColor}`
-            if (contentSide == 2) {
-                settingInput.style.marginLeft = "auto"
-            }
+            settingInput.style.border = `1px solid ${primaryAccent}`
+            settingInput.style.marginLeft = "auto"
             placeholder.forEach(option => {
                 const optionElement = document.createElement("option");
                 optionElement.value = option.value;
@@ -396,24 +452,32 @@
     addTab("cases", "Cases");
     addTab("casino", "Casino");
     addTab("martingale", "Martingale");
-    addTab("customize", "Customization")
+    addCustomizeTab("customize", "Customization")
 
 
     // addSetting(type, label, id, placeholder = "", tab = "general", contentSide = "1")
     addSetting("switch", "Auto Click", "toggleAutoClick", "", "general")
     addSetting("switch", "Auto Vault", "toggleVault", "", "general")
     addSetting("switch", "Auto Collect Armory", "autoArmory", "", "general");
-    addSetting("number", "Sell Price", "sellPrice", "250", "cases", "2");
-    addSetting("switch", "Enable Auto Sell", "toggleSell", "", "cases");
-    addSetting("dropdown", "Currency", "currency", [
-        { value: "money", label: "Money" },
-        { value: "tokens", label: "Tokens" }
-    ], "cases", "2")
-    addSetting("switch", "Enable Case Selling", "toggleCaseSell", "", "cases")
     addSetting("dropdown", "Click Type", "clickType", [
         { value: "money", label: "Money" },
         { value: "cases", label: "Cases" }
     ], "general", "2")
+
+    addSetting("text", "Primary Color", "primaryColor", primaryColor, "customize", "1")
+    addSetting("text", "Secondary Color", "secondaryColor", secondaryColor, "customize", "1")
+    addSetting("text", "Primary Accent", "primaryAccent", primaryAccent, "customize", "1")
+    addSetting("text", "Background Color", "backgroundColor", backgroundColor, "customize", "1")
+    addSetting("text", "Close Button Color", "closeButtonColor", closeButtonColor, "customize", "1")
+
+    addSetting("number", "Sell Price", "sellPrice", "250", "cases", "1");
+    addSetting("switch", "Enable Auto Sell", "toggleSell", "", "cases");
+    addSetting("dropdown", "Currency", "currency", [
+        { value: "money", label: "Money" },
+        { value: "tokens", label: "Tokens" }
+    ], "cases", "1")
+    addSetting("switch", "Enable Case Selling", "toggleCaseSell", "", "cases")
+
     addSetting("switch", "Auto Coinflip", "autoCoinflip", "", "casino")
     addSetting("switch", "Auto Dice", "autoDice", "", "casino")
     addSetting("switch", "Auto BJ", "autoBJ", "", "casino")
@@ -440,5 +504,8 @@
     closeButton.addEventListener("click", function () {
         menu.style.display = "none";
     });
+
+
+    setInterval()
 })();
 
