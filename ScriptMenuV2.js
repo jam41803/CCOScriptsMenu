@@ -16,16 +16,28 @@
 // ==/UserScript==
 
 (function () {
+    const version = "1"
     'use strict';
     var primaryColor = GM_getValue("primaryColor", "#1abc9c");
     var primaryAccent = GM_getValue("primaryAccent", "#1abc9c");
     var secondaryColor = GM_getValue("secondaryColor", "#34495e");
     var backgroundColor = GM_getValue("backgroundColor", "#2c3e50");
     var closeButtonColor = GM_getValue("closeButtonColor", "#e74c3c");
+    var textColor = GM_getValue("textColor", "#ffffff");
+
+    function loadVariables() {
+        primaryColor = GM_getValue("primaryColor", "#1abc9c");
+        primaryAccent = GM_getValue("primaryAccent", "#1abc9c");
+        secondaryColor = GM_getValue("secondaryColor", "#34495e");
+        backgroundColor = GM_getValue("backgroundColor", "#2c3e50");
+        closeButtonColor = GM_getValue("closeButtonColor", "#e74c3c");
+        textColor = GM_getValue("textColor", "#ffffff");
+    }
 
     const menu = document.createElement("div");
     menu.innerHTML = `
         <div id="settings-menu" class="settings-menu">
+            <h3 id="title"> Kenny's CCO Menu </h3>
             <div id="tabs" class="tabs">
                 <!-- Tabs will be dynamically added here -->
             </div>
@@ -33,11 +45,17 @@
                 <!-- Tab content will be dynamically added here -->
             </div>
             <div class="setting-item">
-                <div id="close-label">Toggle with ALT+G</div>
+                <div id="close-label">Toggle with ALT+A</div>
                 <button id="close-menu">Close</button>
             </div>
         </div>
     `;
+
+    const title = menu.querySelector("#title");
+    title.style.margin = "0"
+    title.style.color = primaryAccent;
+    title.textContent = "Kenny's CCO Menu v" + version;
+
     Object.assign(menu.style, {
         background: backgroundColor,
         color: "white",
@@ -61,19 +79,18 @@
         marginBottom: "10px",
         justifyContent: "center",
         backgroundColor: secondaryColor,
-        borderRadius: "5px",  
-        padding: "5px", 
+        borderRadius: "5px",
+        padding: "5px",
         zIndex: "1000"
-
     });
 
-    
+
     const tabStyle = {
         padding: "5px 10px",
-        backgroundColor: secondaryColor,  
+        backgroundColor: secondaryColor,
         border: `2px solid ${secondaryColor}`,
-        color: "white",
-        borderRadius: "5px", 
+        color: textColor,
+        borderRadius: "5px",
         cursor: "pointer",
         textAlign: "center",
         flex: "1",
@@ -85,32 +102,32 @@
 
     const activeTabStyle = {
         backgroundColor: primaryColor,
-        borderColor: primaryAccent,    
-        color: "#fff"             
+        borderColor: primaryAccent,
+        color: "#fff"
     };
 
     // Add hover effect for tabs
     const tabHoverStyle = {
-        backgroundColor: backgroundColor, 
-        color: "#ecf0f1"           
+        backgroundColor: backgroundColor,
+        color: textColor
     };
 
 
     const settingsContent = menu.querySelector("#settings-content");
-    settingsContent.style.position = "relative"; 
+    settingsContent.style.position = "relative";
     settingsContent.style.display = "grid";
 
     // Add hover effect for close button
     const closeButton = menu.querySelector("#close-menu");
-    closeButton.style.backgroundColor = "#e74c3c";
+    closeButton.style.backgroundColor = closeButtonColor;
     closeButton.style.border = "none";
-    closeButton.style.color = "white";
+    closeButton.style.color = textColor;
     closeButton.style.padding = "8px 12px";
     closeButton.style.cursor = "pointer";
-    closeButton.style.borderRadius = "5px"; 
-    closeButton.style.position = "absolute"; 
+    closeButton.style.borderRadius = "5px";
+    closeButton.style.position = "absolute";
     closeButton.style.bottom = "15px";
-    closeButton.style.right = "15px"; 
+    closeButton.style.right = "15px";
 
     const closeLabel = menu.querySelector("#close-label");
     closeLabel.style.left = "15px";
@@ -125,7 +142,7 @@
             isDragging = true;
             offsetX = e.clientX - element.getBoundingClientRect().left;
             offsetY = e.clientY - element.getBoundingClientRect().top;
-            element.style.cursor = "grabbing"; 
+            element.style.cursor = "grabbing";
         });
 
         document.addEventListener("mousemove", (e) => {
@@ -188,19 +205,19 @@
             const tabContents = menu.querySelectorAll(".tab-content");
             tabContents.forEach(content => {
                 content.style.display = "none";
-                content.style.opacity = "0"; 
-                content.style.transform = "translateX(-100%)"; 
+                content.style.opacity = "0";
+                content.style.transform = "translateX(-100%)";
             });
 
             const activeTab1 = menu.querySelector(`#${tabId + "1"}`);
             activeTab1.style.display = "block";
-            activeTab1.style.opacity = "1"; 
-            activeTab1.style.transform = "translateX(0)"; 
+            activeTab1.style.opacity = "1";
+            activeTab1.style.transform = "translateX(0)";
 
             const activeTab2 = menu.querySelector(`#${tabId + "2"}`);
             activeTab2.style.display = "block";
             activeTab2.style.opacity = "1";
-            activeTab2.style.transform = "translateX(0)"; 
+            activeTab2.style.transform = "translateX(0)";
 
             const allTabButtons = tabs.querySelectorAll(".tab-button");
             allTabButtons.forEach(button => {
@@ -216,8 +233,8 @@
         const tabContent = document.createElement("div");
         tabContent.id = tabId + "1";
         tabContent.classList.add("tab-content");
-        tabContent.style.display = "none"; 
-        tabContent.style.position = "absolute"; 
+        tabContent.style.display = "none";
+        tabContent.style.position = "absolute";
         tabContent.style.top = "0";
         tabContent.style.left = "0";
         tabContent.style.width = "50%";
@@ -227,7 +244,7 @@
         tabContent2.id = tabId + "2";
         tabContent2.classList.add("tab-content");
         tabContent2.style.display = "none";
-        tabContent2.style.position = "absolute"; 
+        tabContent2.style.position = "absolute";
         tabContent2.style.top = "0";
         tabContent2.style.right = "0";
         tabContent2.style.width = "50%";
@@ -240,7 +257,7 @@
             tabButton.classList.add("active");
             Object.assign(tabButton.style, activeTabStyle);
             tabContent.style.display = "block";
-            tabContent.style.opacity = "1"; 
+            tabContent.style.opacity = "1";
             tabContent2.style.display = "block";
             tabContent2.style.opacity = "1";
         }
@@ -268,14 +285,14 @@
             const tabContents = menu.querySelectorAll(".tab-content");
             tabContents.forEach(content => {
                 content.style.display = "none";
-                content.style.opacity = "0"; 
-                content.style.transform = "translateX(-100%)"; 
+                content.style.opacity = "0";
+                content.style.transform = "translateX(-100%)";
             });
 
             const activeTab1 = menu.querySelector(`#${tabId + "1"}`);
             activeTab1.style.display = "block";
-            activeTab1.style.opacity = "1"; 
-            activeTab1.style.transform = "translateX(0)"; 
+            activeTab1.style.opacity = "1";
+            activeTab1.style.transform = "translateX(0)";
 
             const allTabButtons = tabs.querySelectorAll(".tab-button");
             allTabButtons.forEach(button => {
@@ -291,8 +308,8 @@
         const tabContent = document.createElement("div");
         tabContent.id = tabId + "1";
         tabContent.classList.add("tab-content");
-        tabContent.style.display = "none"; 
-        tabContent.style.position = "absolute"; 
+        tabContent.style.display = "none";
+        tabContent.style.position = "absolute";
         tabContent.style.top = "0";
         tabContent.style.left = "0";
 
@@ -302,7 +319,7 @@
             tabButton.classList.add("active");
             Object.assign(tabButton.style, activeTabStyle);
             tabContent.style.display = "block";
-            tabContent.style.opacity = "1"; 
+            tabContent.style.opacity = "1";
             tabContent2.style.display = "block";
             tabContent2.style.opacity = "1";
         }
@@ -327,6 +344,7 @@
         const settingLabel = document.createElement("label");
         settingLabel.setAttribute("for", id);
         settingLabel.textContent = label;
+        settingLabel.style.color = textColor;
 
         let settingInput;
 
@@ -343,7 +361,8 @@
 
 
             settingInput.addEventListener("input", function () {
-                GM_setValue(id, settingInput.value); 
+                GM_setValue(id, settingInput.value);
+                loadVariables()
             });
         } else if (type === "text") {
             settingInput = document.createElement("input");
@@ -357,7 +376,8 @@
 
 
             settingInput.addEventListener("input", function () {
-                GM_setValue(id, settingInput.value); 
+                GM_setValue(id, settingInput.value);
+                loadVariables()
             });
         } else if (type === "switch") {
             settingInput = document.createElement("input");
@@ -384,16 +404,17 @@
             if (settingInput.checked) {
                 settingInput.style.backgroundColor = primaryColor;
             } else {
-                settingInput.style.backgroundColor = "#ccc"; 
+                settingInput.style.backgroundColor = "#ccc";
             }
 
             settingInput.addEventListener("change", function () {
                 GM_setValue(id, settingInput.checked);
                 if (settingInput.checked) {
-                    settingInput.style.backgroundColor = primaryColor; 
+                    settingInput.style.backgroundColor = primaryColor;
                 } else {
-                    settingInput.style.backgroundColor = "#ccc"; 
+                    settingInput.style.backgroundColor = "#ccc";
                 }
+                loadVariables()
             });
         } else if (type === "dropdown") {
             settingInput = document.createElement("select");
@@ -412,6 +433,7 @@
 
             settingInput.addEventListener("change", function () {
                 GM_setValue(id, settingInput.value);
+                loadVariables()
             });
         }
 
@@ -432,9 +454,9 @@
         labelItem.classList.add("label-item");
 
         const label = document.createElement("span");
-        label.id = id; 
+        label.id = id;
         label.textContent = labelText;
-        label.style.color = "#ecf0f1";  
+        label.style.color = "#ecf0f1";
         labelItem.appendChild(label);
         if (contentSide == 1) {
             labelItem.style.justifyContent = "flex-end"
@@ -469,6 +491,7 @@
     addSetting("text", "Primary Accent", "primaryAccent", primaryAccent, "customize", "1")
     addSetting("text", "Background Color", "backgroundColor", backgroundColor, "customize", "1")
     addSetting("text", "Close Button Color", "closeButtonColor", closeButtonColor, "customize", "1")
+    addSetting("text", "Text Color", "textColor", textColor, "customize", "1")
 
     addSetting("number", "Sell Price", "sellPrice", "250", "cases", "1");
     addSetting("switch", "Enable Auto Sell", "toggleSell", "", "cases");
@@ -496,7 +519,7 @@
     }, 3000);
 
     window.addEventListener("keydown", function (e) {
-        if (e.altKey && e.key === "g") {
+        if (e.altKey && e.key === "a") {
             menu.style.display = (menu.style.display === "none") ? "block" : "none";
         }
     });
